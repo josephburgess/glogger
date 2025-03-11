@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/yuin/goldmark"
 )
 
@@ -18,6 +19,32 @@ type Post struct {
 	PublishDate time.Time
 }
 
+type Config struct {
+	ContentDir    string // markdown files stored here
+	URLPrefix     string // url prefix for the blog
+	DefaultAuthor string // default author for posts
+	PageSize      int    // post per page
+}
+
+type Blog struct {
+	config Config
+	posts  []Post
+}
+
+// create a new blog
+func New(config Config) (*Blog, error) {
+	return &Blog{
+		config: config,
+		posts:  []Post{},
+	}, nil
+}
+
+func (b *Blog) Initialize() error {
+	// tbc
+	return nil
+}
+
+// parse md file with goldmark
 func ParsePost(filename string) (Post, error) {
 	content, err := os.ReadFile(filename)
 	if err != nil {
@@ -52,6 +79,7 @@ func ParsePost(filename string) (Post, error) {
 	}, nil
 }
 
+// template for rendering a post
 func RenderPost(post Post) (string, error) {
 	const postTmpl = `
 <!DOCTYPE html>
@@ -88,7 +116,6 @@ func RenderPost(post Post) (string, error) {
 </body>
 </html>
 `
-
 	tmpl, err := template.New("post").Parse(postTmpl)
 	if err != nil {
 		return "", err
@@ -102,21 +129,26 @@ func RenderPost(post Post) (string, error) {
 	return buf.String(), nil
 }
 
-func PostHandler(postPath string) func(w http.ResponseWriter, r *http.Request) {
+// createa handler function for a single post
+func PostHandler(postPath string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		post, err := ParsePost(postPath)
 		if err != nil {
-			http.Error(w, "Error parsing post", http.StatusInternalServerError)
+			http.Error(w, "Error parsing post: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		html, err := RenderPost(post)
 		if err != nil {
-			http.Error(w, "Error rendering post", http.StatusInternalServerError)
+			http.Error(w, "Error rendering post: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Write([]byte(html))
 	}
+}
+
+// register http handlers
+func (b *Blog) RegisterHandlers(router *mux.Router) {
 }
