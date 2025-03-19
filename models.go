@@ -18,6 +18,7 @@ type Config struct {
 	URLPrefix     string // url prefix for the blog
 	DefaultAuthor string // default author for posts
 	PageSize      int    // post per page
+	Theme         string // theme to use (default, dark, light, etc.)
 }
 
 // default conf
@@ -32,5 +33,9 @@ func (c *Config) setDefaults() {
 
 	if c.PageSize == 0 {
 		c.PageSize = 10
+	}
+
+	if c.Theme == "" {
+		c.Theme = "default"
 	}
 }

@@ -1,0 +1,43 @@
+/* glogger theme: dark */
+:root {
+  --background: #1a1a1a;
+  --text: #e0e0e0;
+  --muted: #a0a0a0;
+  --link: #60a5fa;
+  --link-hover: #93c5fd;
+  --code-bg: #282c34;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text);
+}
+
+.date {
+  color: var(--muted);
+}
+
+a {
+  color: var(--link);
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+pre {
+  background-color: var(--code-bg);
+}
+
+.post-date {
+  color: var(--muted);
+}

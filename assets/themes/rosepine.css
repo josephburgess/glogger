@@ -1,0 +1,108 @@
+/* glogger theme: rosepine */
+:root {
+  --base: #191724;
+  --surface: #1f1d2e;
+  --overlay: #26233a;
+  --muted: #6e6a86;
+  --subtle: #908caa;
+  --text: #e0def4;
+  --love: #eb6f92;
+  --gold: #f6c177;
+  --rose: #ebbcba;
+  --pine: #31748f;
+  --foam: #9ccfd8;
+  --iris: #c4a7e7;
+
+  --background: var(--base);
+  --link: var(--iris);
+  --link-hover: var(--foam);
+  --code-bg: var(--surface);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text);
+}
+
+.date {
+  color: var(--muted);
+}
+
+a {
+  color: var(--link);
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+pre {
+  background-color: var(--code-bg);
+}
+
+code {
+  color: var(--gold);
+}
+
+.post-date {
+  color: var(--muted);
+}
+
+blockquote {
+  border-left: 4px solid var(--rose);
+  padding-left: 1rem;
+  color: var(--subtle);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--primary);
+}
+
+.date {
+  color: var(--secondary);
+}
+
+a {
+  color: var(--link);
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+pre {
+  background-color: var(--code-bg);
+}
+
+code {
+  color: var(--gold);
+}
+
+.post-date {
+  color: var(--secondary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--primary);
+}
+
+blockquote {
+  border-left: 4px solid var(--rose);
+  padding-left: 1rem;
+  color: var(--subtle);
+}
