@@ -1,4 +1,4 @@
-module github.com/josephburgess/glog
+module github.com/josephburgess/glogger
 
 go 1.24.1
 
