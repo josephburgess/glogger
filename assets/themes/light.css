@@ -1,15 +1,18 @@
 /* glogger theme: light */
 :root {
-  --background: #f5f5f5;
+  --bg: #f5f5f5;
   --text: #333333;
   --muted: #6e6e6e;
   --link: #2563eb;
   --link-hover: #1d4ed8;
   --code-bg: #ffffff;
+  --code-text: #333333;
+  --border: #e5e5e5;
+  --quote: #d1d5db;
 }
 
 body {
-  background-color: var(--background);
+  background-color: var(--bg);
   color: var(--text);
 }
 
@@ -22,7 +25,8 @@ h6 {
   color: var(--text);
 }
 
-.date {
+.date,
+.post-date {
   color: var(--muted);
 }
 
@@ -36,9 +40,15 @@ a:hover {
 
 pre {
   background-color: var(--code-bg);
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--border);
 }
 
-.post-date {
+code {
+  color: var(--code-text);
+}
+
+blockquote {
+  border-left: 4px solid var(--quote);
+  padding-left: 1rem;
   color: var(--muted);
 }

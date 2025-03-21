@@ -1,26 +1,18 @@
 /* glogger theme: rosepine */
 :root {
-  --base: #191724;
-  --surface: #1f1d2e;
-  --overlay: #26233a;
-  --muted: #6e6a86;
-  --subtle: #908caa;
+  --bg: #191724;
   --text: #e0def4;
-  --love: #eb6f92;
-  --gold: #f6c177;
-  --rose: #ebbcba;
-  --pine: #31748f;
-  --foam: #9ccfd8;
-  --iris: #c4a7e7;
-
-  --background: var(--base);
-  --link: var(--iris);
-  --link-hover: var(--foam);
-  --code-bg: var(--surface);
+  --muted: #6e6a86;
+  --link: #c4a7e7;
+  --link-hover: #9ccfd8;
+  --code-bg: #1f1d2e;
+  --code-text: #f6c177;
+  --border: #26233a;
+  --quote: #ebbcba;
 }
 
 body {
-  background-color: var(--background);
+  background-color: var(--bg);
   color: var(--text);
 }
 
@@ -33,7 +25,8 @@ h6 {
   color: var(--text);
 }
 
-.date {
+.date,
+.post-date {
   color: var(--muted);
 }
 
@@ -47,18 +40,15 @@ a:hover {
 
 pre {
   background-color: var(--code-bg);
+  border: 1px solid var(--border);
 }
 
 code {
-  color: var(--gold);
-}
-
-.post-date {
-  color: var(--muted);
+  color: var(--code-text);
 }
 
 blockquote {
-  border-left: 4px solid var(--rose);
+  border-left: 4px solid var(--quote);
   padding-left: 1rem;
-  color: var(--subtle);
+  color: var(--muted);
 }
