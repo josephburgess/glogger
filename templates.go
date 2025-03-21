@@ -9,21 +9,14 @@ import (
 //go:embed assets/templates/*.html
 var templatesFS embed.FS
 
-type templateRenderer struct {
-	postTemplate *template.Template
-	listTemplate *template.Template
-	theme        string
-	urlPrefix    string
-}
-
 func newTemplateRenderer(theme string, urlPrefix string) (*templateRenderer, error) {
-	// parse post template html
+	// Parse post template html
 	postTmpl, err := template.ParseFS(templatesFS, "assets/templates/post.html")
 	if err != nil {
 		return nil, err
 	}
 
-	// parse list template html
+	// Parse list template html
 	listTmpl, err := template.ParseFS(templatesFS, "assets/templates/list.html")
 	if err != nil {
 		return nil, err
@@ -38,40 +31,32 @@ func newTemplateRenderer(theme string, urlPrefix string) (*templateRenderer, err
 }
 
 func (tr *templateRenderer) renderPost(post Post, blogPrefix string) (string, error) {
-    data := struct {
-        Post
-        BlogPrefix string
-        ThemeCSS   string
-    }{
-        Post:       post,
-        BlogPrefix: blogPrefix,
-        ThemeCSS:   GetThemePath(blogPrefix, tr.theme),
-    }
+	data := PostTemplateData{
+		Post:       post,
+		BlogPrefix: blogPrefix,
+		ThemeCSS:   GetThemePath(blogPrefix, tr.theme),
+	}
 
-    var buf bytes.Buffer
-    if err := tr.postTemplate.Execute(&buf, data); err != nil {
-        return "", err
-    }
+	var buf bytes.Buffer
+	if err := tr.postTemplate.Execute(&buf, data); err != nil {
+		return "", err
+	}
 
-    return buf.String(), nil
+	return buf.String(), nil
 }
+
 func (tr *templateRenderer) renderPostList(posts []Post, blogPrefix string) (string, error) {
-    data := struct {
-        Posts      []Post
-        BlogPrefix string
-        ThemeCSS   string
-        Title      string
-    }{
-        Posts:      posts,
-        BlogPrefix: blogPrefix,
-        ThemeCSS:   GetThemePath(blogPrefix, tr.theme),
-        Title:      "Blog Posts", // default title
-    }
+	data := ListTemplateData{
+		Posts:      posts,
+		BlogPrefix: blogPrefix,
+		ThemeCSS:   GetThemePath(blogPrefix, tr.theme),
+		Title:      "Blog Posts",
+	}
 
-    var buf bytes.Buffer
-    if err := tr.listTemplate.Execute(&buf, data); err != nil {
-        return "", err
-    }
+	var buf bytes.Buffer
+	if err := tr.listTemplate.Execute(&buf, data); err != nil {
+		return "", err
+	}
 
-    return buf.String(), nil
+	return buf.String(), nil
 }

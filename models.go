@@ -21,6 +21,26 @@ type Config struct {
 	Theme         string // theme to use (default, dark, light, etc.)
 }
 
+type PostTemplateData struct {
+	Post
+	BlogPrefix string
+	ThemeCSS   string
+}
+
+type ListTemplateData struct {
+	Posts      []Post
+	BlogPrefix string
+	ThemeCSS   string
+	Title      string
+}
+
+type templateRenderer struct {
+	postTemplate *template.Template
+	listTemplate *template.Template
+	theme        string
+	urlPrefix    string
+}
+
 // default conf
 func (c *Config) setDefaults() {
 	if c.ContentDir == "" {
