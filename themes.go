@@ -16,17 +16,12 @@ var availableThemes = []string{
 	"rosepine",
 }
 
-// ValidateTheme checks if the provided theme name is valid
+// check the theme in cfg is valid
 func ValidateTheme(theme string) bool {
 	return slices.Contains(availableThemes, theme)
 }
 
-// GetThemePath returns the path to the theme CSS file
+// grab the path to css file
 func GetThemePath(urlPrefix, theme string) string {
 	return fmt.Sprintf("%s/_themes/%s.css", urlPrefix, theme)
-}
-
-// ListAvailableThemes returns a slice of all available theme names
-func ListAvailableThemes() []string {
-	return availableThemes
 }

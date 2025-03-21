@@ -40,23 +40,23 @@ func (b *Blog) handleListPosts(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b *Blog) handleThemeCSS(w http.ResponseWriter, r *http.Request) {
-    vars := mux.Vars(r)
-    theme := vars["theme"]
+	vars := mux.Vars(r)
+	theme := vars["theme"]
 
-    if !ValidateTheme(theme) {
-        http.NotFound(w, r)
-        return
-    }
+	if !ValidateTheme(theme) {
+		http.NotFound(w, r)
+		return
+	}
 
-    content, err := themeFS.ReadFile("assets/themes/" + theme + ".css")
-    if err != nil {
-        http.Error(w, "Theme not found: "+err.Error(), http.StatusNotFound)
-        return
-    }
-    
-    w.Header().Set("Content-Type", "text/css")
-    w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-    w.Write(content)
+	content, err := themeFS.ReadFile("assets/themes/" + theme + ".css")
+	if err != nil {
+		http.Error(w, "Theme not found: "+err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/css")
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+	w.Write(content)
 }
 
 func PostHandler(postPath string, theme string) http.HandlerFunc {
@@ -159,22 +159,22 @@ func (b *Blog) handleDebug(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b *Blog) handleRawThemeCSS(w http.ResponseWriter, r *http.Request) {
-    vars := mux.Vars(r)
-    theme := vars["theme"]
+	vars := mux.Vars(r)
+	theme := vars["theme"]
 
-    if !ValidateTheme(theme) {
-        http.NotFound(w, r)
-        return
-    }
+	if !ValidateTheme(theme) {
+		http.NotFound(w, r)
+		return
+	}
 
-    content, err := themeFS.ReadFile("assets/themes/" + theme + ".css")
-    if err != nil {
-        http.Error(w, "Theme not found: "+err.Error(), http.StatusNotFound)
-        return
-    }
+	content, err := themeFS.ReadFile("assets/themes/" + theme + ".css")
+	if err != nil {
+		http.Error(w, "Theme not found: "+err.Error(), http.StatusNotFound)
+		return
+	}
 
-    w.Header().Set("Content-Type", "text/plain")
-    w.Write(content)
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write(content)
 }
 
 func (b *Blog) RegisterHandlers(router *mux.Router) {
@@ -199,5 +199,5 @@ func (b *Blog) RegisterHandlers(router *mux.Router) {
 	// debug
 	blogRouter.HandleFunc("/_debug", b.handleDebug).Methods("GET")
 	blogRouter.HandleFunc("/_debug/{theme}", b.handleDebug).Methods("GET")
-  blogRouter.HandleFunc("/_raw_themes/{theme}.css", b.handleRawThemeCSS).Methods("GET")
+	blogRouter.HandleFunc("/_raw_themes/{theme}.css", b.handleRawThemeCSS).Methods("GET")
 }

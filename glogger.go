@@ -21,16 +21,11 @@ const (
 //     Theme: glogger.ThemeRosePine, // Optional theme selection
 //   })
 //
-//   // Register the blog handlers with your router
+//   // Register with yyour router
 //   blog.RegisterHandlers(router)
 //
-// This will set up routes for:
+// assuming default conf, this will set up these routes:
 // - "/blog" (list of posts)
 // - "/blog/{slug}" (individual posts)
 // - "/blog/_themes/{theme}.css" (theme CSS files)
 //
-// Available themes:
-// - glogger.ThemeDefault: A clean, minimal light theme
-// - glogger.ThemeDark: A dark theme for reduced eye strain
-// - glogger.ThemeLight: A light theme with subtle colors
-// - glogger.ThemeRosePine: A soothing dark theme inspired by Rose Pine
