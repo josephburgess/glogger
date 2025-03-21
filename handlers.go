@@ -17,7 +17,8 @@ func (b *Blog) RegisterHandlers(router *mux.Router) {
 
 	blogRouter := router.PathPrefix(b.config.URLPrefix).Subrouter()
 
-	blogRouter.HandleFunc("", b.handleListPosts).Methods("GET")
+  blogRouter.HandleFunc("/", b.handleListPosts).Methods("GET")
+  blogRouter.HandleFunc("", b.handleListPosts).Methods("GET")
 	blogRouter.HandleFunc("/{slug}", b.handleSinglePost).Methods("GET")
 	blogRouter.HandleFunc("/_themes/{theme}.css", b.handleThemeCSS).Methods("GET")
 }
