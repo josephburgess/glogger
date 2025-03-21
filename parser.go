@@ -38,7 +38,7 @@ func parsePost(filename string) (Post, error) {
 	// check for date in YYYY-MM-DD in first 3 lines
 	datePattern := regexp.MustCompile(`^\d{4}-\d{2}-\d{2}`)
 	dateLine := -1
-	for i, line := range lines[:Min(3, len(lines))] {
+	for i, line := range lines[:min(3, len(lines))] {
 		if datePattern.MatchString(line) {
 			if date, err := time.Parse("2006-01-02", strings.TrimSpace(line)); err == nil {
 				publishDate = date
@@ -85,9 +85,3 @@ func parsePost(filename string) (Post, error) {
 	}, nil
 }
 
-func Min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}

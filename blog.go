@@ -33,10 +33,6 @@ func New(config Config) (*Blog, error) {
 }
 
 func (b *Blog) Initialize() error {
-	return b.initialize()
-}
-
-func (b *Blog) initialize() error {
 	b.posts = []Post{}
 
 	err := filepath.Walk(b.config.ContentDir, func(path string, info fs.FileInfo, err error) error {
