@@ -14,11 +14,11 @@ type Post struct {
 }
 
 type Config struct {
-	ContentDir    string // markdown files stored here
-	URLPrefix     string // url prefix for the blog
-	DefaultAuthor string // default author for posts
-	PageSize      int    // post per page
-	Theme         string // theme to use (default, dark, light, etc.)
+	ContentDir string // markdown files stored here
+	URLPrefix  string // url prefix for the blog
+	// DefaultAuthor string // default author for posts - future feature
+	// PageSize      int    // post per page - future feature
+	Theme string // theme to use (default, dark, light, etc.)
 }
 
 type PostTemplateData struct {
@@ -51,9 +51,9 @@ func (c *Config) setDefaults() {
 		c.URLPrefix = "/blog"
 	}
 
-	if c.PageSize == 0 {
-		c.PageSize = 10
-	}
+	// if c.PageSize == 0 { -- future feature
+	// 	c.PageSize = 10
+	// }
 
 	if c.Theme == "" {
 		c.Theme = "default"
