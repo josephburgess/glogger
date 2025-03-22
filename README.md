@@ -1,11 +1,11 @@
 # glogger
 
-A lightweight, minimal blogging engine written in Go. Primarily built for my own site but thought it would be nice to have as a package.
+A lightweight, minimal blogging engine written in Go. Primarily built for my own site at [https://joeburgess.dev](https://joeburgess.dev) but thought it would be nice to have as a package.
 
 ## Features
 
-- **Simple integration**: Add a blog to your existing Go website with just a few lines of code
-- **Routing setup**: Registers blog routes with your [gorilla/mux](https://github.com/gorilla/mux) router, but can work with other routers
+- **Simple setup**: Add to an existing Go site with a few lines of code
+- **Routing setup**: Registers routes using [gorilla/mux](https://github.com/gorilla/mux) but with a bit of massaging should work for other setups
 - **Themes**: Includes 4 themes
 - **Responsive**: Mobile-friendly
 - **No database**: Posts are stored as Markdown files in your project
