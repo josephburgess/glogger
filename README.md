@@ -2,6 +2,11 @@
 
 A lightweight, minimal blogging engine written in Go. Primarily built for my own site at [https://joeburgess.dev](https://joeburgess.dev) but thought it would be nice to have as a package.
 
+<p align="center">
+<img src="https://github.com/user-attachments/assets/061f15c9-c55b-4a82-a004-d0fc095074ee" width="800">
+</p>
+
+
 ## Features
 
 - **Simple setup**: Add to an existing Go site with a few lines of code
