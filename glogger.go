@@ -1,5 +1,5 @@
-// simple blog engine for go websites. mainly built this for my personal site http://joeburgess.dev
-// but thought it would be worth packaging for others to use!
+// Package glogger provides a lightweight blog engine for go web apps.
+// It supports markdown content, multiple themes, and easy integration with existing sites.
 package glogger
 
 const Version = "0.2.0"
