@@ -144,6 +144,30 @@ Similarly, the CSS themes are embedded in the package. You can modify them by fo
 - [gorilla/mux](https://github.com/gorilla/mux) for routing - recommended but not essential
 - [goldmark](https://github.com/yuin/goldmark) for Markdown parsing
 
+## Roadmap
+
+The following are just a few bits I'd like to add at some point!
+
+### Short-term
+
+- Make routing easier outside of gorilla/mux
+- Pagination
+- Authors
+- Custom user themes set in config
+- Syntax highlighting in code blocks
+
+### Medium-term
+
+- Tag/category support
+- Search
+- RSS feed generation
+- Table of contents for longer posts
+- Better image support
+
+### Long-term
+
+- If I somehow get through all the above I'll think about this more!
+
 ## License
 
 MIT License
