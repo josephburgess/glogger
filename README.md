@@ -6,11 +6,10 @@ A lightweight, minimal blogging engine written in Go. Primarily built for my own
 <img src="https://github.com/user-attachments/assets/061f15c9-c55b-4a82-a004-d0fc095074ee" width="800">
 </p>
 
-
 ## Features
 
 - **Simple setup**: Add to an existing Go site with a few lines of code
-- **Routing setup**: Registers routes using [gorilla/mux](https://github.com/gorilla/mux) but with a bit of massaging should work for other setups
+- **Routing setup**: Registers routes using [gorilla/mux](https://github.com/gorilla/mux)
 - **Themes**: Includes 4 themes
 - **Responsive**: Mobile-friendly
 - **No database**: Posts are stored as Markdown files in your project
@@ -25,7 +24,7 @@ go get github.com/josephburgess/glogger
 
 1. Create a directory for your blog posts (default: `content/posts/`)
 2. Add .md files for your blog posts in this directory
-3. Example initialising glogger using mux:
+3. Example initialising glogger using gorilla/mux:
 
 ```go
 package main
@@ -146,7 +145,8 @@ Similarly, the CSS themes are embedded in the package. You can modify them by fo
 
 ## Dependencies
 
-- [gorilla/mux](https://github.com/gorilla/mux) for routing - recommended but not essential
+- [gorilla/mux](https://github.com/gorilla/mux) for routing
+  - This choice was simply because its what I use for my personal site - hope to expand the compatibility with other routers in future
 - [goldmark](https://github.com/yuin/goldmark) for Markdown parsing
 
 ## Roadmap
