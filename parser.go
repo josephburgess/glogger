@@ -9,25 +9,10 @@ import (
 	"time"
 
 	"github.com/yuin/goldmark"
-	highlighting "github.com/yuin/goldmark-highlighting/v2"
-	"github.com/yuin/goldmark/parser"
 )
 
-func newMarkdown(highlightStyle string) goldmark.Markdown {
-	return goldmark.New(
-		goldmark.WithParserOptions(
-			parser.WithAutoHeadingID(),
-		),
-		goldmark.WithExtensions(
-			highlighting.NewHighlighting(
-				highlighting.WithStyle(highlightStyle),
-			),
-		),
-	)
-}
-
 // parse md with goldmark
-func parsePost(filename string, highlightStyle string) (Post, error) {
+func parsePost(filename string, md goldmark.Markdown) (Post, error) {
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		return Post{}, err
@@ -42,8 +27,8 @@ func parsePost(filename string, highlightStyle string) (Post, error) {
 	// find title
 	titleLine := -1
 	for i, line := range lines {
-		if strings.HasPrefix(line, "# ") {
-			title = strings.TrimPrefix(line, "# ")
+		if after, ok := strings.CutPrefix(line, "# "); ok {
+			title = after
 			titleLine = i
 			break
 		}
@@ -81,7 +66,6 @@ func parsePost(filename string, highlightStyle string) (Post, error) {
 
 	filteredContent := strings.Join(contentLines, "\n")
 
-	md := newMarkdown(highlightStyle)
 	var buf bytes.Buffer
 	if err := md.Convert([]byte(filteredContent), &buf); err != nil {
 		return Post{}, err

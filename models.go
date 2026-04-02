@@ -60,6 +60,6 @@ func (c *Config) setDefaults() {
 		c.Theme = "default"
 	}
 	if c.HighlightStyle == "" {
-		c.HighlightStyle = "rose-pine"
+		c.HighlightStyle = highlightStyleForTheme(c.Theme)
 	}
 }
