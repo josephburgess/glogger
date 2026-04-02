@@ -44,7 +44,7 @@ func (b *Blog) Initialize() error {
 			return nil
 		}
 
-		post, err := parsePost(path)
+		post, err := parsePost(path, b.config.HighlightStyle)
 		if err != nil {
 			return err
 		}
@@ -72,6 +72,7 @@ func (b *Blog) GetPosts() []Post {
 	return result
 }
 
+// URLPrefix returns the configured URL prefix for the blog.
 func (b *Blog) URLPrefix() string {
 	return b.config.URLPrefix
 }

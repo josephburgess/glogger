@@ -82,7 +82,7 @@ func PostHandler(postPath string, theme string) http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		post, err := parsePost(postPath)
+		post, err := parsePost(postPath, "rose-pine")
 		if err != nil {
 			http.Error(w, "Error parsing post: "+err.Error(), http.StatusInternalServerError)
 			return

@@ -18,7 +18,8 @@ type Config struct {
 	URLPrefix  string // url prefix for the blog
 	// DefaultAuthor string // default author for posts - future feature
 	// PageSize      int    // post per page - future feature
-	Theme string // theme to use (default, dark, light, etc.)
+	Theme          string // theme to use (default, dark, light, etc.)
+	HighlightStyle string // syntax highlighting style (default: "dracula")
 }
 
 type PostTemplateData struct {
@@ -57,5 +58,8 @@ func (c *Config) setDefaults() {
 
 	if c.Theme == "" {
 		c.Theme = "default"
+	}
+	if c.HighlightStyle == "" {
+		c.HighlightStyle = "rose-pine"
 	}
 }

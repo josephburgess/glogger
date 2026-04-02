@@ -9,11 +9,25 @@ import (
 	"time"
 
 	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"github.com/yuin/goldmark/parser"
 )
 
+func newMarkdown(highlightStyle string) goldmark.Markdown {
+	return goldmark.New(
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
+		goldmark.WithExtensions(
+			highlighting.NewHighlighting(
+				highlighting.WithStyle(highlightStyle),
+			),
+		),
+	)
+}
+
 // parse md with goldmark
-func parsePost(filename string) (Post, error) {
+func parsePost(filename string, highlightStyle string) (Post, error) {
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		return Post{}, err
@@ -21,10 +35,10 @@ func parsePost(filename string) (Post, error) {
 
 	rawContent := string(content)
 	lines := strings.Split(rawContent, "\n")
-	
+
 	title := "Untitled Post"
 	var publishDate time.Time
-	
+
 	// find title
 	titleLine := -1
 	for i, line := range lines {
@@ -57,21 +71,17 @@ func parsePost(filename string) (Post, error) {
 		publishDate = info.ModTime()
 	}
 
-	// remove date/title 
+	// remove date/title
 	contentLines := make([]string, 0, len(lines))
 	for i, line := range lines {
 		if i != dateLine && i != titleLine {
 			contentLines = append(contentLines, line)
 		}
 	}
-	
+
 	filteredContent := strings.Join(contentLines, "\n")
 
-	md := goldmark.New(
-		goldmark.WithParserOptions(
-			parser.WithAutoHeadingID(),
-		),
-	)
+	md := newMarkdown(highlightStyle)
 	var buf bytes.Buffer
 	if err := md.Convert([]byte(filteredContent), &buf); err != nil {
 		return Post{}, err
@@ -84,4 +94,3 @@ func parsePost(filename string) (Post, error) {
 		PublishDate: publishDate,
 	}, nil
 }
-
