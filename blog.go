@@ -71,3 +71,7 @@ func (b *Blog) GetPosts() []Post {
 	copy(result, b.posts)
 	return result
 }
+
+func (b *Blog) URLPrefix() string {
+	return b.config.URLPrefix
+}

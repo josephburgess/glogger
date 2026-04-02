@@ -2,29 +2,30 @@ package glogger
 
 import (
 	"net/http"
-
-	"github.com/gorilla/mux"
+	"strings"
 )
 
-// register blog routes
-func (b *Blog) RegisterHandlers(router *mux.Router) {
+// Handler returns an http.Handler that serves the blog.
+// mount with http.StripPrefix
+// ex: http.Handle("/blog/", http.StripPrefix("/blog", blog.Handler()))
+func (b *Blog) Handler() http.Handler {
 	if len(b.posts) == 0 {
 		if err := b.Initialize(); err != nil {
 			panic("Failed to initialize blog: " + err.Error())
 		}
 	}
 
-	blogRouter := router.PathPrefix(b.config.URLPrefix).Subrouter()
+	mux := http.NewServeMux()
 
-	blogRouter.HandleFunc("/", b.handleListPosts).Methods("GET")
-	blogRouter.HandleFunc("", b.handleListPosts).Methods("GET")
-	blogRouter.HandleFunc("/{slug}", b.handleSinglePost).Methods("GET")
-	blogRouter.HandleFunc("/_themes/{theme}.css", b.handleThemeCSS).Methods("GET")
+	mux.HandleFunc("GET /{$}", b.handleListPosts)
+	mux.HandleFunc("GET /{slug}", b.handleSinglePost)
+	mux.HandleFunc("GET /_themes/{theme}", b.handleThemeCSS)
+
+	return mux
 }
 
 func (b *Blog) handleSinglePost(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	slug := vars["slug"]
+	slug := r.PathValue("slug")
 
 	for _, post := range b.posts {
 		if post.Slug == slug {
@@ -55,8 +56,8 @@ func (b *Blog) handleListPosts(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b *Blog) handleThemeCSS(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	theme := vars["theme"]
+	theme := r.PathValue("theme")
+	theme = strings.TrimSuffix(theme, ".css")
 
 	if !ValidateTheme(theme) {
 		http.NotFound(w, r)
@@ -73,6 +74,8 @@ func (b *Blog) handleThemeCSS(w http.ResponseWriter, r *http.Request) {
 	w.Write(content)
 }
 
+// PostHandler returns a standalone handler for rendering a single post file
+// useful if you want to serve a specific markdown file somewhere
 func PostHandler(postPath string, theme string) http.HandlerFunc {
 	if theme == "" {
 		theme = "default"
