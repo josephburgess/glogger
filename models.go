@@ -11,6 +11,9 @@ type Post struct {
 	RawContent  string
 	PublishDate time.Time
 	Slug        string
+	Description string
+	Tags        []string
+	Draft       bool
 }
 
 type Config struct {
