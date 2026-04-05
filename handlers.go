@@ -166,7 +166,6 @@ func PostHandler(postPath string, theme string) http.HandlerFunc {
 	cfg := Config{Theme: theme}
 	cfg.setDefaults()
 
-	md := newMarkdown()
 	renderer, err := newTemplateRenderer(cfg)
 	if err != nil {
 		return func(w http.ResponseWriter, r *http.Request) {
@@ -174,19 +173,19 @@ func PostHandler(postPath string, theme string) http.HandlerFunc {
 		}
 	}
 
-	return func(w http.ResponseWriter, r *http.Request) {
-		post, err := parsePost(postPath, md)
-		if err != nil {
+	post, err := parsePost(postPath, newMarkdown())
+	if err != nil {
+		return func(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error parsing post: "+err.Error(), http.StatusInternalServerError)
-			return
 		}
+	}
 
+	return func(w http.ResponseWriter, r *http.Request) {
 		html, err := renderer.renderPost(post)
 		if err != nil {
 			http.Error(w, "Error rendering post: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Write([]byte(html))
 	}

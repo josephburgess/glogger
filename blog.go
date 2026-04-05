@@ -2,6 +2,7 @@ package glogger
 
 import (
 	"io/fs"
+	"net/http"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -89,6 +90,17 @@ func (b *Blog) GetPosts() []Post {
 
 func (b *Blog) URLPrefix() string {
 	return b.config.URLPrefix
+}
+
+// Mount registers the blog's routes on mux using the configured URLPrefix.
+// It also adds a redirect from URLPrefix to URLPrefix+"/" for clean URLs.
+// This is the recommended way to attach a blog to an existing mux.
+func (b *Blog) Mount(mux *http.ServeMux) {
+	prefix := b.config.URLPrefix
+	mux.HandleFunc("GET "+prefix, func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, prefix+"/", http.StatusMovedPermanently)
+	})
+	mux.Handle(prefix+"/", http.StripPrefix(prefix, b.Handler()))
 }
 
 func newMarkdown() goldmark.Markdown {

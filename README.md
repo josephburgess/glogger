@@ -27,18 +27,17 @@ go get github.com/josephburgess/glogger
 
 ```go
 blog, err := glogger.New(glogger.Config{
-    ContentDir:  "content/posts",
-    URLPrefix:   "/blog",
-    Theme:       glogger.ThemeRosePine,
-    Title:       "My Blog",
-    BaseURL:     "https://example.com",
+    ContentDir: "content/posts",
+    URLPrefix:  "/blog",
+    Theme:      glogger.ThemeRosePine,
+    Title:      "My Blog",
+    BaseURL:    "https://example.com",
 })
 if err != nil {
     log.Fatal(err)
 }
 
-// mount on your existing stdlib mux:
-mux.Handle("/blog/", http.StripPrefix("/blog", blog.Handler()))
+blog.Mount(mux) // registers all routes under URLPrefix
 ```
 
 This registers these routes under your mux:

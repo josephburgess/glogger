@@ -2,7 +2,7 @@
 // It supports markdown content, multiple themes, and easy integration with existing sites.
 package glogger
 
-const Version = "0.2.0"
+const Version = "0.3.0"
 
 // themes available
 const (
@@ -14,17 +14,19 @@ const (
 
 // Usage:
 //
-//   blog, err := glogger.New(glogger.Config{
-//     ContentDir: "content/posts",  // Where your markdown files are stored
-//     URLPrefix: "/blog",           // URL prefix for the blog routes
-//     Theme: glogger.ThemeRosePine, // Optional theme selection
-//   })
+// blog, err := glogger.New(glogger.Config{
+//     ContentDir:  "content/posts",
+//     URLPrefix:   "/blog",
+//     Theme:       glogger.ThemeRosePine,
+//     Title:       "My Blog",
+//     BaseURL:     "https://example.com",
+// })
 //
-//   // Mount on your router:
-//   mux.Handle("/blog/", http.StripPrefix("/blog", blog.Handler()))
+// blog.Mount(mux)  // registers all routes under URLPrefix
 //
-// assuming default conf, this will set up these routes:
-// - "/blog" (list of posts)
-// - "/blog/{slug}" (individual posts)
-// - "/blog/_themes/{theme}.css" (theme CSS files)
-//
+// assuming default conf, this will set up these routes (relative to prefix)
+//   - GET /                    — post list
+//   - GET /feed.xml            — RSS 2.0 feed
+//   - GET /{slug}              — individual post
+//   - GET /_tags/{tag}         — posts filtered by tag
+//   - GET /_themes/{theme}.css — theme CSS
