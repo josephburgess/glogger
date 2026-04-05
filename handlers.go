@@ -6,21 +6,14 @@ import (
 )
 
 // Handler returns an http.Handler that serves the blog.
-// mount with http.StripPrefix
-// ex: http.Handle("/blog/", http.StripPrefix("/blog", blog.Handler()))
+// Mount with http.StripPrefix:
+//
+//	http.Handle("/blog/", http.StripPrefix("/blog", blog.Handler()))
 func (b *Blog) Handler() http.Handler {
-	if len(b.posts) == 0 {
-		if err := b.Initialize(); err != nil {
-			panic("Failed to initialize blog: " + err.Error())
-		}
-	}
-
 	mux := http.NewServeMux()
-
 	mux.HandleFunc("GET /{$}", b.handleListPosts)
 	mux.HandleFunc("GET /{slug}", b.handleSinglePost)
 	mux.HandleFunc("GET /_themes/{theme}", b.handleThemeCSS)
-
 	return mux
 }
 
@@ -34,7 +27,6 @@ func (b *Blog) handleSinglePost(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "Error rendering post: "+err.Error(), http.StatusInternalServerError)
 				return
 			}
-
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			w.Write([]byte(html))
 			return
@@ -50,7 +42,6 @@ func (b *Blog) handleListPosts(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error rendering post list: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Write([]byte(html))
 }
@@ -74,25 +65,25 @@ func (b *Blog) handleThemeCSS(w http.ResponseWriter, r *http.Request) {
 	w.Write(content)
 }
 
-// PostHandler returns a standalone handler for rendering a single post file
-// useful if you want to serve a specific markdown file somewhere
+// PostHandler returns a standalone handler for rendering a single markdown file.
+// Useful for serving a specific post outside the blog structure.
 func PostHandler(postPath string, theme string) http.HandlerFunc {
 	if theme == "" {
 		theme = "default"
 	}
 
-	md := newMarkdown(highlightStyleForTheme(theme))
+	md := newMarkdown()
+	renderer, err := newTemplateRenderer(theme, "/blog")
+	if err != nil {
+		return func(w http.ResponseWriter, r *http.Request) {
+			http.Error(w, "Error creating renderer: "+err.Error(), http.StatusInternalServerError)
+		}
+	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		post, err := parsePost(postPath, md)
 		if err != nil {
 			http.Error(w, "Error parsing post: "+err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		renderer, err := newTemplateRenderer(theme, "/blog")
-		if err != nil {
-			http.Error(w, "Error creating renderer: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 

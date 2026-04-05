@@ -8,7 +8,6 @@ import (
 type Post struct {
 	Title       string
 	Content     template.HTML
-	RawContent  string
 	PublishDate time.Time
 	Slug        string
 	Description string
@@ -17,18 +16,16 @@ type Post struct {
 }
 
 type Config struct {
-	ContentDir string // markdown files stored here
-	URLPrefix  string // url prefix for the blog
-	// DefaultAuthor string // default author for posts - future feature
-	// PageSize      int    // post per page - future feature
-	Theme          string // theme to use (default, dark, light, etc.)
-	HighlightStyle string // syntax highlighting style (default: "dracula")
+	ContentDir string // directory containing markdown files
+	URLPrefix  string // URL prefix for the blog (e.g. "/blog")
+	Theme      string // theme name: "default", "dark", "light", "rosepine"
 }
 
 type PostTemplateData struct {
 	Post
-	BlogPrefix string
-	ThemeCSS   string
+	BlogPrefix   string
+	ThemeCSS     string
+	HighlightCSS string
 }
 
 type ListTemplateData struct {
@@ -45,24 +42,14 @@ type templateRenderer struct {
 	urlPrefix    string
 }
 
-// default conf
 func (c *Config) setDefaults() {
 	if c.ContentDir == "" {
 		c.ContentDir = "content/posts"
 	}
-
 	if c.URLPrefix == "" {
 		c.URLPrefix = "/blog"
 	}
-
-	// if c.PageSize == 0 { -- future feature
-	// 	c.PageSize = 10
-	// }
-
 	if c.Theme == "" {
 		c.Theme = "default"
-	}
-	if c.HighlightStyle == "" {
-		c.HighlightStyle = highlightStyleForTheme(c.Theme)
 	}
 }

@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/yuin/goldmark"
-	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"github.com/yuin/goldmark/parser"
 )
 
@@ -30,14 +29,18 @@ func New(config Config) (*Blog, error) {
 		return nil, err
 	}
 
-	md := newMarkdown(config.HighlightStyle)
-
-	return &Blog{
+	b := &Blog{
 		config:   config,
 		posts:    []Post{},
 		renderer: renderer,
-		md:       md,
-	}, nil
+		md:       newMarkdown(),
+	}
+
+	if err := b.Initialize(); err != nil {
+		return nil, err
+	}
+
+	return b, nil
 }
 
 func (b *Blog) Initialize() error {
@@ -55,6 +58,10 @@ func (b *Blog) Initialize() error {
 		post, err := parsePost(path, b.md)
 		if err != nil {
 			return err
+		}
+
+		if post.Draft {
+			return nil
 		}
 
 		filename := filepath.Base(path)
@@ -80,20 +87,14 @@ func (b *Blog) GetPosts() []Post {
 	return result
 }
 
-// URLPrefix returns the configured URL prefix for the blog.
 func (b *Blog) URLPrefix() string {
 	return b.config.URLPrefix
 }
 
-func newMarkdown(highlightStyle string) goldmark.Markdown {
+func newMarkdown() goldmark.Markdown {
 	return goldmark.New(
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
-		),
-		goldmark.WithExtensions(
-			highlighting.NewHighlighting(
-				highlighting.WithStyle(highlightStyle),
-			),
 		),
 	)
 }

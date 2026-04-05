@@ -32,9 +32,10 @@ func newTemplateRenderer(theme string, urlPrefix string) (*templateRenderer, err
 
 func (tr *templateRenderer) renderPost(post Post, blogPrefix string) (string, error) {
 	data := PostTemplateData{
-		Post:       post,
-		BlogPrefix: blogPrefix,
-		ThemeCSS:   GetThemePath(blogPrefix, tr.theme),
+		Post:         post,
+		BlogPrefix:   blogPrefix,
+		ThemeCSS:     GetThemePath(blogPrefix, tr.theme),
+		HighlightCSS: HighlightJSStyleURL(tr.theme),
 	}
 
 	var buf bytes.Buffer
