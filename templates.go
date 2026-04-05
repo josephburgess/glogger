@@ -9,7 +9,7 @@ import (
 //go:embed assets/templates/*.html
 var templatesFS embed.FS
 
-func newTemplateRenderer(theme, urlPrefix, highlightCSSURL string) (*templateRenderer, error) {
+func newTemplateRenderer(config Config) (*templateRenderer, error) {
 	postTmpl, err := template.ParseFS(templatesFS, "assets/templates/post.html")
 	if err != nil {
 		return nil, err
@@ -21,20 +21,18 @@ func newTemplateRenderer(theme, urlPrefix, highlightCSSURL string) (*templateRen
 	}
 
 	return &templateRenderer{
-		postTemplate:    postTmpl,
-		listTemplate:    listTmpl,
-		theme:           theme,
-		urlPrefix:       urlPrefix,
-		highlightCSSURL: highlightCSSURL,
+		postTemplate: postTmpl,
+		listTemplate: listTmpl,
+		config:       config,
 	}, nil
 }
 
 func (tr *templateRenderer) renderPost(post Post) (string, error) {
 	data := PostTemplateData{
 		Post:         post,
-		BlogPrefix:   tr.urlPrefix,
-		ThemeCSS:     getThemePath(tr.urlPrefix, tr.theme),
-		HighlightCSS: tr.highlightCSSURL,
+		BlogPrefix:   tr.config.URLPrefix,
+		ThemeCSS:     getThemePath(tr.config.URLPrefix, tr.config.Theme),
+		HighlightCSS: highlightJSStyleURL(tr.config.SyntaxTheme),
 	}
 
 	var buf bytes.Buffer
@@ -46,15 +44,12 @@ func (tr *templateRenderer) renderPost(post Post) (string, error) {
 }
 
 func (tr *templateRenderer) renderPostList(posts []Post, tag string) (string, error) {
-	title := "Blog Posts"
-	if tag != "" {
-		title = "Posts tagged: " + tag
-	}
 	data := ListTemplateData{
 		Posts:      posts,
-		BlogPrefix: tr.urlPrefix,
-		ThemeCSS:   getThemePath(tr.urlPrefix, tr.theme),
-		Title:      title,
+		BlogPrefix: tr.config.URLPrefix,
+		ThemeCSS:   getThemePath(tr.config.URLPrefix, tr.config.Theme),
+		BlogTitle:  tr.config.Title,
+		Tag:        tag,
 	}
 
 	var buf bytes.Buffer
