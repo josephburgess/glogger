@@ -16,12 +16,27 @@ var availableThemes = []string{
 	"rosepine",
 }
 
-// check the theme in cfg is valid
-func ValidateTheme(theme string) bool {
+func validateTheme(theme string) bool {
 	return slices.Contains(availableThemes, theme)
 }
 
-// grab the path to css file
-func GetThemePath(urlPrefix, theme string) string {
+func getThemePath(urlPrefix, theme string) string {
 	return fmt.Sprintf("%s/_themes/%s.css", urlPrefix, theme)
+}
+
+const highlightJSBase = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1"
+
+func highlightJSStyleURL(syntaxTheme string) string {
+	return fmt.Sprintf("%s/styles/%s.min.css", highlightJSBase, syntaxTheme)
+}
+
+func defaultSyntaxTheme(theme string) string {
+	switch theme {
+	case "rosepine":
+		return "rose-pine"
+	case "dark":
+		return "github-dark"
+	default:
+		return "github"
+	}
 }

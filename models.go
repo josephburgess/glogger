@@ -8,23 +8,25 @@ import (
 type Post struct {
 	Title       string
 	Content     template.HTML
-	RawContent  string
 	PublishDate time.Time
 	Slug        string
+	Description string
+	Tags        []string
+	Draft       bool
 }
 
 type Config struct {
-	ContentDir string // markdown files stored here
-	URLPrefix  string // url prefix for the blog
-	// DefaultAuthor string // default author for posts - future feature
-	// PageSize      int    // post per page - future feature
-	Theme string // theme to use (default, dark, light, etc.)
+	ContentDir  string // directory containing markdown files
+	URLPrefix   string // URL prefix for the blog (e.g. "/blog")
+	Theme       string // theme name: "default", "dark", "light", "rosepine"
+	SyntaxTheme string // highlight.js theme name (e.g. "rose-pine", "github-dark"); defaults to best match for Theme
 }
 
 type PostTemplateData struct {
 	Post
-	BlogPrefix string
-	ThemeCSS   string
+	BlogPrefix   string
+	ThemeCSS     string
+	HighlightCSS string
 }
 
 type ListTemplateData struct {
@@ -35,27 +37,24 @@ type ListTemplateData struct {
 }
 
 type templateRenderer struct {
-	postTemplate *template.Template
-	listTemplate *template.Template
-	theme        string
-	urlPrefix    string
+	postTemplate    *template.Template
+	listTemplate    *template.Template
+	theme           string
+	urlPrefix       string
+	highlightCSSURL string
 }
 
-// default conf
 func (c *Config) setDefaults() {
 	if c.ContentDir == "" {
 		c.ContentDir = "content/posts"
 	}
-
 	if c.URLPrefix == "" {
 		c.URLPrefix = "/blog"
 	}
-
-	// if c.PageSize == 0 { -- future feature
-	// 	c.PageSize = 10
-	// }
-
 	if c.Theme == "" {
 		c.Theme = "default"
+	}
+	if c.SyntaxTheme == "" {
+		c.SyntaxTheme = defaultSyntaxTheme(c.Theme)
 	}
 }

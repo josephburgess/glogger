@@ -2,86 +2,69 @@ package glogger
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"os"
-	"regexp"
 	"strings"
 	"time"
 
 	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/parser"
+	"gopkg.in/yaml.v3"
 )
 
-// parse md with goldmark
-func parsePost(filename string) (Post, error) {
+type frontmatter struct {
+	Title       string   `yaml:"title"`
+	Date        string   `yaml:"date"`
+	Description string   `yaml:"description"`
+	Tags        []string `yaml:"tags"`
+	Draft       bool     `yaml:"draft"`
+}
+
+func parsePost(filename string, md goldmark.Markdown) (Post, error) {
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		return Post{}, err
 	}
 
-	rawContent := string(content)
-	lines := strings.Split(rawContent, "\n")
-	
-	title := "Untitled Post"
+	raw := string(content)
+
+	if !strings.HasPrefix(raw, "---\n") {
+		return Post{}, fmt.Errorf("missing frontmatter in %s", filename)
+	}
+
+	parts := strings.SplitN(raw, "---\n", 3)
+	if len(parts) < 3 {
+		return Post{}, fmt.Errorf("invalid frontmatter in %s", filename)
+	}
+
+	var fm frontmatter
+	if err := yaml.Unmarshal([]byte(parts[1]), &fm); err != nil {
+		return Post{}, err
+	}
+
+	title := fm.Title
+	if title == "" {
+		title = "Untitled Post"
+	}
+
 	var publishDate time.Time
-	
-	// find title
-	titleLine := -1
-	for i, line := range lines {
-		if strings.HasPrefix(line, "# ") {
-			title = strings.TrimPrefix(line, "# ")
-			titleLine = i
-			break
+	if fm.Date != "" {
+		if d, err := time.Parse("2006-01-02", fm.Date); err == nil {
+			publishDate = d
 		}
 	}
 
-	// check for date in YYYY-MM-DD in first 3 lines
-	datePattern := regexp.MustCompile(`^\d{4}-\d{2}-\d{2}`)
-	dateLine := -1
-	for i, line := range lines[:min(3, len(lines))] {
-		if datePattern.MatchString(line) {
-			if date, err := time.Parse("2006-01-02", strings.TrimSpace(line)); err == nil {
-				publishDate = date
-				dateLine = i
-				break
-			}
-		}
-	}
-
-	// else use file modified date
-	if publishDate.IsZero() {
-		info, err := os.Stat(filename)
-		if err != nil {
-			return Post{}, err
-		}
-		publishDate = info.ModTime()
-	}
-
-	// remove date/title 
-	contentLines := make([]string, 0, len(lines))
-	for i, line := range lines {
-		if i != dateLine && i != titleLine {
-			contentLines = append(contentLines, line)
-		}
-	}
-	
-	filteredContent := strings.Join(contentLines, "\n")
-
-	md := goldmark.New(
-		goldmark.WithParserOptions(
-			parser.WithAutoHeadingID(),
-		),
-	)
 	var buf bytes.Buffer
-	if err := md.Convert([]byte(filteredContent), &buf); err != nil {
+	if err := md.Convert([]byte(strings.TrimSpace(parts[2])), &buf); err != nil {
 		return Post{}, err
 	}
 
 	return Post{
 		Title:       title,
 		Content:     template.HTML(buf.String()),
-		RawContent:  rawContent,
 		PublishDate: publishDate,
+		Description: fm.Description,
+		Tags:        fm.Tags,
+		Draft:       fm.Draft,
 	}, nil
 }
-

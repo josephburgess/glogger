@@ -14,15 +14,14 @@ const (
 
 // Usage:
 //
-//   // Create a new blog with default settings
 //   blog, err := glogger.New(glogger.Config{
 //     ContentDir: "content/posts",  // Where your markdown files are stored
 //     URLPrefix: "/blog",           // URL prefix for the blog routes
 //     Theme: glogger.ThemeRosePine, // Optional theme selection
 //   })
 //
-//   // Register with yyour router
-//   blog.RegisterHandlers(router)
+//   // Mount on your router:
+//   mux.Handle("/blog/", http.StripPrefix("/blog", blog.Handler()))
 //
 // assuming default conf, this will set up these routes:
 // - "/blog" (list of posts)

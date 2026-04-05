@@ -5,31 +5,42 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/parser"
 )
 
 type Blog struct {
 	config   Config
 	posts    []Post
 	renderer *templateRenderer
+	md       goldmark.Markdown
 }
 
 func New(config Config) (*Blog, error) {
 	config.setDefaults()
 
-	if !ValidateTheme(config.Theme) {
+	if !validateTheme(config.Theme) {
 		config.Theme = "default"
 	}
 
-	renderer, err := newTemplateRenderer(config.Theme, config.URLPrefix)
+	renderer, err := newTemplateRenderer(config.Theme, config.URLPrefix, highlightJSStyleURL(config.SyntaxTheme))
 	if err != nil {
 		return nil, err
 	}
 
-	return &Blog{
+	b := &Blog{
 		config:   config,
 		posts:    []Post{},
 		renderer: renderer,
-	}, nil
+		md:       newMarkdown(),
+	}
+
+	if err := b.Initialize(); err != nil {
+		return nil, err
+	}
+
+	return b, nil
 }
 
 func (b *Blog) Initialize() error {
@@ -44,9 +55,13 @@ func (b *Blog) Initialize() error {
 			return nil
 		}
 
-		post, err := parsePost(path)
+		post, err := parsePost(path, b.md)
 		if err != nil {
 			return err
+		}
+
+		if post.Draft {
+			return nil
 		}
 
 		filename := filepath.Base(path)
@@ -70,4 +85,16 @@ func (b *Blog) GetPosts() []Post {
 	result := make([]Post, len(b.posts))
 	copy(result, b.posts)
 	return result
+}
+
+func (b *Blog) URLPrefix() string {
+	return b.config.URLPrefix
+}
+
+func newMarkdown() goldmark.Markdown {
+	return goldmark.New(
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
+	)
 }
