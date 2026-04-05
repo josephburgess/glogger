@@ -16,9 +16,10 @@ type Post struct {
 }
 
 type Config struct {
-	ContentDir string // directory containing markdown files
-	URLPrefix  string // URL prefix for the blog (e.g. "/blog")
-	Theme      string // theme name: "default", "dark", "light", "rosepine"
+	ContentDir  string // directory containing markdown files
+	URLPrefix   string // URL prefix for the blog (e.g. "/blog")
+	Theme       string // theme name: "default", "dark", "light", "rosepine"
+	SyntaxTheme string // highlight.js theme name (e.g. "rose-pine", "github-dark"); defaults to best match for Theme
 }
 
 type PostTemplateData struct {
@@ -36,10 +37,11 @@ type ListTemplateData struct {
 }
 
 type templateRenderer struct {
-	postTemplate *template.Template
-	listTemplate *template.Template
-	theme        string
-	urlPrefix    string
+	postTemplate    *template.Template
+	listTemplate    *template.Template
+	theme           string
+	urlPrefix       string
+	highlightCSSURL string
 }
 
 func (c *Config) setDefaults() {
@@ -51,5 +53,8 @@ func (c *Config) setDefaults() {
 	}
 	if c.Theme == "" {
 		c.Theme = "default"
+	}
+	if c.SyntaxTheme == "" {
+		c.SyntaxTheme = defaultSyntaxTheme(c.Theme)
 	}
 }

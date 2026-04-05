@@ -29,18 +29,23 @@ func GetThemePath(urlPrefix, theme string) string {
 
 const highlightJSBase = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1"
 
-// HighlightJSStyleURL returns the CDN URL for the highlight.js stylesheet matching the theme.
-func HighlightJSStyleURL(theme string) string {
-	styles := map[string]string{
-		"default":  "github",
-		"light":    "github",
-		"dark":     "github-dark",
-		"rosepine": "rose-pine",
+// HighlightJSStyleURL returns the CDN URL for a named highlight.js theme.
+// Any theme available at https://highlightjs.org/examples can be used.
+func HighlightJSStyleURL(syntaxTheme string) string {
+	return fmt.Sprintf("%s/styles/%s.min.css", highlightJSBase, syntaxTheme)
+}
+
+// defaultSyntaxTheme returns the highlight.js theme that best matches a glogger theme.
+func defaultSyntaxTheme(theme string) string {
+	switch theme {
+	case "rosepine":
+		return "rose-pine"
+	case "dark":
+		return "github-dark"
+	case "light", "default":
+		return "github"
+	default:
+		return "github"
 	}
-	style, ok := styles[theme]
-	if !ok {
-		style = "github"
-	}
-	return fmt.Sprintf("%s/styles/%s.min.css", highlightJSBase, style)
 }
 

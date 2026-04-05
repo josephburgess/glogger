@@ -73,7 +73,7 @@ func PostHandler(postPath string, theme string) http.HandlerFunc {
 	}
 
 	md := newMarkdown()
-	renderer, err := newTemplateRenderer(theme, "/blog")
+	renderer, err := newTemplateRenderer(theme, "/blog", HighlightJSStyleURL(defaultSyntaxTheme(theme)))
 	if err != nil {
 		return func(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error creating renderer: "+err.Error(), http.StatusInternalServerError)
