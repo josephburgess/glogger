@@ -20,11 +20,11 @@ type Blog struct {
 func New(config Config) (*Blog, error) {
 	config.setDefaults()
 
-	if !ValidateTheme(config.Theme) {
+	if !validateTheme(config.Theme) {
 		config.Theme = "default"
 	}
 
-	renderer, err := newTemplateRenderer(config.Theme, config.URLPrefix, HighlightJSStyleURL(config.SyntaxTheme))
+	renderer, err := newTemplateRenderer(config.Theme, config.URLPrefix, highlightJSStyleURL(config.SyntaxTheme))
 	if err != nil {
 		return nil, err
 	}

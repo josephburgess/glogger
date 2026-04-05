@@ -22,7 +22,7 @@ func (b *Blog) handleSinglePost(w http.ResponseWriter, r *http.Request) {
 
 	for _, post := range b.posts {
 		if post.Slug == slug {
-			html, err := b.renderer.renderPost(post, b.config.URLPrefix)
+			html, err := b.renderer.renderPost(post)
 			if err != nil {
 				http.Error(w, "Error rendering post: "+err.Error(), http.StatusInternalServerError)
 				return
@@ -37,7 +37,7 @@ func (b *Blog) handleSinglePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b *Blog) handleListPosts(w http.ResponseWriter, r *http.Request) {
-	html, err := b.renderer.renderPostList(b.posts, b.config.URLPrefix)
+	html, err := b.renderer.renderPostList(b.posts)
 	if err != nil {
 		http.Error(w, "Error rendering post list: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -50,7 +50,7 @@ func (b *Blog) handleThemeCSS(w http.ResponseWriter, r *http.Request) {
 	theme := r.PathValue("theme")
 	theme = strings.TrimSuffix(theme, ".css")
 
-	if !ValidateTheme(theme) {
+	if !validateTheme(theme) {
 		http.NotFound(w, r)
 		return
 	}
@@ -73,7 +73,7 @@ func PostHandler(postPath string, theme string) http.HandlerFunc {
 	}
 
 	md := newMarkdown()
-	renderer, err := newTemplateRenderer(theme, "/blog", HighlightJSStyleURL(defaultSyntaxTheme(theme)))
+	renderer, err := newTemplateRenderer(theme, "/blog", highlightJSStyleURL(defaultSyntaxTheme(theme)))
 	if err != nil {
 		return func(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error creating renderer: "+err.Error(), http.StatusInternalServerError)
@@ -87,7 +87,7 @@ func PostHandler(postPath string, theme string) http.HandlerFunc {
 			return
 		}
 
-		html, err := renderer.renderPost(post, "/blog")
+		html, err := renderer.renderPost(post)
 		if err != nil {
 			http.Error(w, "Error rendering post: "+err.Error(), http.StatusInternalServerError)
 			return

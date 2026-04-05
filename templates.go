@@ -29,11 +29,11 @@ func newTemplateRenderer(theme, urlPrefix, highlightCSSURL string) (*templateRen
 	}, nil
 }
 
-func (tr *templateRenderer) renderPost(post Post, blogPrefix string) (string, error) {
+func (tr *templateRenderer) renderPost(post Post) (string, error) {
 	data := PostTemplateData{
 		Post:         post,
-		BlogPrefix:   blogPrefix,
-		ThemeCSS:     GetThemePath(blogPrefix, tr.theme),
+		BlogPrefix:   tr.urlPrefix,
+		ThemeCSS:     getThemePath(tr.urlPrefix, tr.theme),
 		HighlightCSS: tr.highlightCSSURL,
 	}
 
@@ -45,11 +45,11 @@ func (tr *templateRenderer) renderPost(post Post, blogPrefix string) (string, er
 	return buf.String(), nil
 }
 
-func (tr *templateRenderer) renderPostList(posts []Post, blogPrefix string) (string, error) {
+func (tr *templateRenderer) renderPostList(posts []Post) (string, error) {
 	data := ListTemplateData{
 		Posts:      posts,
-		BlogPrefix: blogPrefix,
-		ThemeCSS:   GetThemePath(blogPrefix, tr.theme),
+		BlogPrefix: tr.urlPrefix,
+		ThemeCSS:   getThemePath(tr.urlPrefix, tr.theme),
 		Title:      "Blog Posts",
 	}
 
