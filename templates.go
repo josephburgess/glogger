@@ -45,12 +45,16 @@ func (tr *templateRenderer) renderPost(post Post) (string, error) {
 	return buf.String(), nil
 }
 
-func (tr *templateRenderer) renderPostList(posts []Post) (string, error) {
+func (tr *templateRenderer) renderPostList(posts []Post, tag string) (string, error) {
+	title := "Blog Posts"
+	if tag != "" {
+		title = "Posts tagged: " + tag
+	}
 	data := ListTemplateData{
 		Posts:      posts,
 		BlogPrefix: tr.urlPrefix,
 		ThemeCSS:   getThemePath(tr.urlPrefix, tr.theme),
-		Title:      "Blog Posts",
+		Title:      title,
 	}
 
 	var buf bytes.Buffer

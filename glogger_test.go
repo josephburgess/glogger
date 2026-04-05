@@ -189,6 +189,36 @@ func TestHandler_ListPosts(t *testing.T) {
 	}
 }
 
+func TestHandler_TaggedPosts(t *testing.T) {
+	dir := t.TempDir()
+	writePost(t, dir, "tagged.md", "---\ntitle: Tagged Post\ndate: 2025-01-01\ntags: [go, test]\n---\n\nContent.\n")
+	writePost(t, dir, "other.md", "---\ntitle: Other Post\ndate: 2025-01-02\ntags: [rust]\n---\n\nContent.\n")
+
+	blog, err := New(Config{ContentDir: dir, URLPrefix: "/blog", Theme: "default"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	req := httptest.NewRequest("GET", "/_tags/go", nil)
+	req.SetPathValue("tag", "go")
+	w := httptest.NewRecorder()
+	blog.Handler().ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("status: got %d, want %d", w.Code, http.StatusOK)
+	}
+	body := w.Body.String()
+	if !strings.Contains(body, "Tagged Post") {
+		t.Error("expected tagged post in response")
+	}
+	if strings.Contains(body, "Other Post") {
+		t.Error("expected other post to be excluded")
+	}
+	if !strings.Contains(body, "Posts tagged: go") {
+		t.Error("expected tag title in response")
+	}
+}
+
 func TestHandler_SinglePost(t *testing.T) {
 	blog := blogWithPosts(t, "---\ntitle: Hello\ndate: 2025-01-01\n---\n\nBody content.\n")
 

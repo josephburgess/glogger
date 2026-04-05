@@ -40,7 +40,7 @@
             </div>
             <div class="post-date">{{.PublishDate.Format "January 2, 2006"}}</div>
             {{if .Description}}<p class="post-description">{{.Description}}</p>{{end}}
-            {{if .Tags}}<div class="post-tags">{{range .Tags}}<span class="tag">{{.}}</span>{{end}}</div>{{end}}
+            {{if .Tags}}<div class="post-tags">{{range .Tags}}<a href="{{$.BlogPrefix}}/_tags/{{.}}" class="tag">{{.}}</a>{{end}}</div>{{end}}
         </li>
         {{end}}
     </ul>
