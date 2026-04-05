@@ -36,15 +36,14 @@ type ListTemplateData struct {
 	Posts      []Post
 	BlogPrefix string
 	ThemeCSS   string
-	Title      string
+	BlogTitle  string // from config.Title
+	Tag        string // non-empty when filtering by tag
 }
 
 type templateRenderer struct {
-	postTemplate    *template.Template
-	listTemplate    *template.Template
-	theme           string
-	urlPrefix       string
-	highlightCSSURL string
+	postTemplate *template.Template
+	listTemplate *template.Template
+	config       Config
 }
 
 func (c *Config) setDefaults() {

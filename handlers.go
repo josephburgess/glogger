@@ -163,12 +163,11 @@ func (b *Blog) handleFeed(w http.ResponseWriter, r *http.Request) {
 // PostHandler returns a standalone handler for rendering a single markdown file.
 // Useful for serving a specific post outside the blog structure.
 func PostHandler(postPath string, theme string) http.HandlerFunc {
-	if theme == "" {
-		theme = "default"
-	}
+	cfg := Config{Theme: theme}
+	cfg.setDefaults()
 
 	md := newMarkdown()
-	renderer, err := newTemplateRenderer(theme, "/blog", highlightJSStyleURL(defaultSyntaxTheme(theme)))
+	renderer, err := newTemplateRenderer(cfg)
 	if err != nil {
 		return func(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error creating renderer: "+err.Error(), http.StatusInternalServerError)

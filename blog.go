@@ -24,7 +24,7 @@ func New(config Config) (*Blog, error) {
 		config.Theme = "default"
 	}
 
-	renderer, err := newTemplateRenderer(config.Theme, config.URLPrefix, highlightJSStyleURL(config.SyntaxTheme))
+	renderer, err := newTemplateRenderer(config)
 	if err != nil {
 		return nil, err
 	}
