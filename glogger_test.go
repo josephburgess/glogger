@@ -277,6 +277,63 @@ func TestHandler_ThemeCSS_InvalidTheme(t *testing.T) {
 	}
 }
 
+func TestHandler_Feed(t *testing.T) {
+	dir := t.TempDir()
+	writePost(t, dir, "hello.md", "---\ntitle: Hello World\ndate: 2025-03-01\ndescription: A test post\n---\n\nContent.\n")
+
+	blog, err := New(Config{
+		ContentDir:  dir,
+		URLPrefix:   "/blog",
+		Theme:       "default",
+		Title:       "My Blog",
+		Description: "A test blog",
+		BaseURL:     "https://example.com",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	req := httptest.NewRequest("GET", "/feed.xml", nil)
+	w := httptest.NewRecorder()
+	blog.Handler().ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("status: got %d, want %d", w.Code, http.StatusOK)
+	}
+	if ct := w.Header().Get("Content-Type"); !strings.HasPrefix(ct, "application/rss+xml") {
+		t.Errorf("Content-Type: got %q, want application/rss+xml", ct)
+	}
+
+	body := w.Body.String()
+	if !strings.Contains(body, "<title>My Blog</title>") {
+		t.Error("expected channel title in feed")
+	}
+	if !strings.Contains(body, "<title>Hello World</title>") {
+		t.Error("expected post title in feed")
+	}
+	if !strings.Contains(body, "https://example.com/blog/hello") {
+		t.Error("expected full post URL in feed")
+	}
+	if !strings.Contains(body, "<description>A test post</description>") {
+		t.Error("expected post description in feed")
+	}
+}
+
+func TestHandler_Feed_NoBaseURL(t *testing.T) {
+	blog := blogWithPosts(t, "---\ntitle: Post\ndate: 2025-01-01\n---\n\nContent.\n")
+
+	req := httptest.NewRequest("GET", "/feed.xml", nil)
+	w := httptest.NewRecorder()
+	blog.Handler().ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("status: got %d, want %d", w.Code, http.StatusOK)
+	}
+	if !strings.Contains(w.Body.String(), "/blog/hello") {
+		t.Error("expected relative post URL in feed when BaseURL is empty")
+	}
+}
+
 // helpers
 
 func writeTempPost(t *testing.T, content string) string {

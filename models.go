@@ -20,6 +20,9 @@ type Config struct {
 	URLPrefix   string // URL prefix for the blog (e.g. "/blog")
 	Theme       string // theme name: "default", "dark", "light", "rosepine"
 	SyntaxTheme string // highlight.js theme name (e.g. "rose-pine", "github-dark"); defaults to best match for Theme
+	Title       string // blog title used in RSS feed channel (default: "Blog")
+	Description string // blog description used in RSS feed channel (optional)
+	BaseURL     string // base URL of the site (e.g. "https://example.com") — used to build absolute links in RSS feed
 }
 
 type PostTemplateData struct {
@@ -56,5 +59,8 @@ func (c *Config) setDefaults() {
 	}
 	if c.SyntaxTheme == "" {
 		c.SyntaxTheme = defaultSyntaxTheme(c.Theme)
+	}
+	if c.Title == "" {
+		c.Title = "Blog"
 	}
 }
